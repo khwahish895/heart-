@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Heart Particle Animation</title>
+<style>
+body {
+  margin: 0;
+  background: #0b0013;
+  overflow: hidden;
+}
+canvas {
+  display: block;
+}
+</style>
+</head>
+<body>
+
+<canvas id="canvas"></canvas>
+
+<script>
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let particles = [];
+
+function createHeartPoints() {
+  for (let t = 0; t < Math.PI * 2; t += 0.03) {
+    let x = 16 * Math.pow(Math.sin(t), 3);
+    let y = 13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t);
+
+    particles.push({
+      x: x * 15 + canvas.width / 2,
+      y: -y * 15 + canvas.height / 2,
+      vx: (Math.random() - 0.5) * 2,
+      vy: (Math.random() - 0.5) * 2,
+      size: 2
+    });
+  }
+}
+
+function animate() {
+  ctx.fillStyle = "rgba(0, 0, 0, 0.2)";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  particles.forEach(p => {
+    ctx.fillStyle = "pink";
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+    ctx.fill();
+
+    p.x += p.vx;
+    p.y += p.vy;
+
+    // attraction back to heart shape
+    let dx = (canvas.width / 2 - p.x) * 0.01;
+    let dy = (canvas.height / 2 - p.y) * 0.01;
+
+    p.vx += dx;
+    p.vy += dy;
+  });
+
+  requestAnimationFrame(animate);
+}
+
+createHeartPoints();
+animate();
+</script>
+
+</body>
+</html>
